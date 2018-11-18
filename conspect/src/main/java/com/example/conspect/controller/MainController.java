@@ -5,11 +5,11 @@ import com.example.conspect.domain.User;
 import com.example.conspect.repos.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,15 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
     @Autowired
     private MessageRepo messageRepo;
 
-        @Value("${upload.path}")
+    @Value("${upload.path}")
     private String uploadPath;
 
     @GetMapping("/")
@@ -51,7 +49,7 @@ public class MainController {
 
         return "main";
     }
-
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping("/main")
     public String add(
             @AuthenticationPrincipal User user,
@@ -60,6 +58,7 @@ public class MainController {
             BindingResult bindingResult,
             Model model
     ) throws IOException {
+
         message.setAuthor(user);
 
         if(bindingResult.hasErrors()){
@@ -68,20 +67,7 @@ public class MainController {
             model.mergeAttributes(errorsMap);
             model.addAttribute("message", message);
         } else {
-            if (file != null && !file.getOriginalFilename().isEmpty()) {
-                File uploadDir = new File(uploadPath);
-
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
-                }
-
-                String uuidFile = UUID.randomUUID().toString();
-                String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-                file.transferTo(new File(uploadPath + "/" + resultFilename));
-
-                message.setFilename(resultFilename);
-            }
+            saveFile(file, message);
 
             model.addAttribute("message", null);
 
@@ -93,5 +79,25 @@ public class MainController {
         return "main";
     }
 
+    void saveFile(@RequestParam("file") MultipartFile file, @Valid Message message) throws IOException {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            File uploadDir = new File(uploadPath);
+
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+
+            String uuidFile = UUID.randomUUID().toString();
+            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+
+            file.transferTo(new File(uploadPath + "/" + resultFilename));
+
+            message.setFilename(resultFilename);
+        }
+    }
+    @GetMapping("/guest")
+    public String notUser(Map<String, Object> model) {
+        return "should";
+    }
 
 }
