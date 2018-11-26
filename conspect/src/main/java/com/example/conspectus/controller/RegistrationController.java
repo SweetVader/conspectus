@@ -1,8 +1,8 @@
-package com.example.conspect.controller;
+package com.example.conspectus.controller;
 
-import com.example.conspect.domain.User;
-import com.example.conspect.domain.dto.CaptchaResponseDto;
-import com.example.conspect.service.UserService;
+import com.example.conspectus.domain.User;
+import com.example.conspectus.domain.dto.CaptchaResponseDto;
+import com.example.conspectus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

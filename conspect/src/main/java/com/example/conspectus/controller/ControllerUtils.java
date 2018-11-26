@@ -1,4 +1,4 @@
-package com.example.conspect.controller;
+package com.example.conspectus.controller;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

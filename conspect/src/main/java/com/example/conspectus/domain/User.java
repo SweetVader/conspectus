@@ -1,4 +1,4 @@
-package com.example.conspect.domain;
+package com.example.conspectus.domain;
 
 
 import org.springframework.security.core.GrantedAuthority;

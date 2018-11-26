@@ -1,6 +1,6 @@
-package com.example.conspect.repos;
+package com.example.conspectus.repos;
 
-import com.example.conspect.domain.User;
+import com.example.conspectus.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepo extends JpaRepository<User, Long> {

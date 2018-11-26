@@ -1,4 +1,4 @@
-package com.example.conspect;
+package com.example.conspectus;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

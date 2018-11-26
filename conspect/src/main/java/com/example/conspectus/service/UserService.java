@@ -1,9 +1,9 @@
-package com.example.conspect.service;
+package com.example.conspectus.service;
 
 
-import com.example.conspect.domain.Role;
-import com.example.conspect.domain.User;
-import com.example.conspect.repos.UserRepo;
+import com.example.conspectus.domain.Role;
+import com.example.conspectus.domain.User;
+import com.example.conspectus.repos.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -104,29 +104,20 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    public void updateProfile(User user, String password, String email) {
-        String userEmail = user.getEmail();
+    /*public void deleteUser(User user, String username, Map<String,String> form) {
+        user.setUsername(username);
 
-        boolean isEmailChanged = (!email.equals(userEmail)) ||
-                (!userEmail.equals(email));
+        Set<Long> ID = Arrays.stream(Role.values())
+                .map(Role::name)
+                .collect(Collectors.toSet());
 
-        if (isEmailChanged){
-            user.setEmail(email);
+        user.getRoles().clear();
 
-            if (!StringUtils.isEmpty(email)){
-                user.setActivationCode(UUID.randomUUID().toString());
+        for (String key : form.keySet()) {
+            if (ID.contains(key)) {
+                user.getRoles().add(Role.valueOf(key));
             }
         }
-
-        if (!StringUtils.isEmpty(password)){
-            user.setPassword(passwordEncoder.encode(password)); ;
-        }
-
         userRepo.save(user);
-
-        if(isEmailChanged) {
-            sendMessage(user);
-        }
-
-    }
+    }*/
 }

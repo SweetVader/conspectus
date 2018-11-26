@@ -1,4 +1,4 @@
-package com.example.conspect.config;
+package com.example.conspectus.config;
 
 
 import org.springframework.beans.factory.annotation.Value;

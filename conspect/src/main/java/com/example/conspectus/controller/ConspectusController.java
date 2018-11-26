@@ -1,17 +1,17 @@
-package com.example.conspect.controller;
+package com.example.conspectus.controller;
 
-import com.example.conspect.domain.Message;
-import com.example.conspect.domain.User;
-import com.example.conspect.repos.MessageRepo;
+import com.example.conspectus.domain.Message;
+import com.example.conspectus.domain.User;
+import com.example.conspectus.repos.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,40 +19,21 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 @Controller
-public class MainController {
+@RequestMapping("/user")
+public class ConspectusController {
+
     @Autowired
     private MessageRepo messageRepo;
 
     @Value("${upload.path}")
     private String uploadPath;
 
-    @GetMapping("/")
-    public String greeting(Map<String, Object> model) {
-        return "greeting";
-    }
-
-    @GetMapping("/main")
-    public String main(@RequestParam(required = false, defaultValue = "") String filter, Model model) {
-        Iterable<Message> messages = messageRepo.findAll();
-
-        if (filter != null && !filter.isEmpty()) {
-            messages = messageRepo.findByTag(filter);
-        } else {
-            messages = messageRepo.findAll();
-        }
-
-        model.addAttribute("messages", messages);
-        model.addAttribute("filter", filter);
-
-        return "main";
-    }
-    @PreAuthorize("hasAuthority('USER')")
-    @PostMapping("/main")
+    @PostMapping("/profile/{user}")
     public String add(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable User user,
             @RequestParam("file") MultipartFile file,
             @Valid Message message,
             BindingResult bindingResult,
@@ -61,7 +42,7 @@ public class MainController {
 
         message.setAuthor(user);
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
 
             model.mergeAttributes(errorsMap);
@@ -75,11 +56,37 @@ public class MainController {
         }
         Iterable<Message> messages = messageRepo.findAll();
         model.addAttribute("messages", messages);
+        model.addAttribute("isCurrentUser", currentUser.equals(user));
 
-        return "main";
+        return "success";
     }
 
-    void saveFile(@RequestParam("file") MultipartFile file, @Valid Message message) throws IOException {
+  /*  @PostMapping("/delete")
+    public String deleteMessage(
+            @PathVariable User user,
+            @RequestParam("file") MultipartFile file,
+            @Valid Message message,
+            Model model
+            ){
+
+        SQLiteDbSupport db = new SQLiteDbSupport();
+        db.delete
+
+
+        return "profile/{user}";
+    }*/
+
+ /* @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+      String[] ids = request.getParameterValues("message.id");
+
+      if (ids != null && ids.length > 0){
+          UserService userService = new UserService();
+          UserService.removeAll(ids);
+      }
+  }*/
+
+    private void saveFile(@RequestParam("file") MultipartFile file, @Valid Message message) throws IOException {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             File uploadDir = new File(uploadPath);
 
@@ -87,17 +94,13 @@ public class MainController {
                 uploadDir.mkdir();
             }
 
-            String uuidFile = UUID.randomUUID().toString();
-            String resultFilename = uuidFile + "." + file.getOriginalFilename();
+            String resultFilename = file.getOriginalFilename();
 
             file.transferTo(new File(uploadPath + "/" + resultFilename));
 
             message.setFilename(resultFilename);
         }
     }
-    @GetMapping("/guest")
-    public String notUser(Map<String, Object> model) {
-        return "should";
-    }
-
 }
+
+

@@ -1,9 +1,12 @@
-package com.example.conspect.domain;
+package com.example.conspectus.domain;
 
+import com.example.conspectus.domain.util.MessageHelper;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Message {
@@ -12,8 +15,12 @@ public class Message {
     private Long id;
 
     @NotBlank(message = "Please fill the message")
-    @Length(max = 2048, message = "Message too long (more than 2kB)")
+    @Length(max = 255, message = "Title too long (more than 255)")
+    private String title;
+    @Length(max = 2048, message = "Description too long (more than 2kB)")
     private String text;
+
+    private int num;
     @Length(max = 255, message = "Message too long (more than 255)")
     private String tag;
 
@@ -23,17 +30,27 @@ public class Message {
 
     private String filename;
 
+    @ManyToMany
+    @JoinTable(
+            name = "message_likes",
+            joinColumns = {@JoinColumn(name = "message_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> likes = new HashSet<>();
+
     public Message() {
     }
 
-    public Message(String text, String tag, User user) {
+    public Message(String title, String text, int num, String tag, User user) {
         this.author = user;
+        this.title = title;
         this.text = text;
+        this.num = num;
         this.tag = tag;
     }
 
     public String getAuthorName(){
-        return author != null ? author.getUsername() : "<none>";
+        return MessageHelper.getAuthorName(author);
     }
 
     public Long getId() {
@@ -74,6 +91,30 @@ public class Message {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public Set<User> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<User> likes) {
+        this.likes = likes;
     }
 }
 

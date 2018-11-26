@@ -1,8 +1,10 @@
 create table message (
     id bigint not null auto_increment,
+    title varchar(255) not null,
     filename varchar(255),
-    tag varchar(255),
-    text varchar(2048),
+    tag varchar(255) not null,
+    text varchar(2048) not null,
+    num int not null,
     user_id bigint,
     primary key (id)) engine=MyISAM;
 

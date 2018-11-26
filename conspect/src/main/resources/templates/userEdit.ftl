@@ -3,7 +3,7 @@
 <@c.page>
 <h5>User editor</h5>
 
-<form action="/user" method="post">
+<form method="post">
     <div class="col-sm-4 mt-3">
         <input type="text" class="form-control" name="username" value="${user.username}">
     </div>

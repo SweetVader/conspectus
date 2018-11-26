@@ -1,15 +1,33 @@
 <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-    Message editor
+    Conspectus editor
 </a>
 <div class="collapse <#if message??>show</#if>" id="collapseExample">
     <div class="form-group mt-3">
         <form method="post" enctype="multipart/form-data">
             <div class="form-group">
+                <input type="text" class="form-control ${(titleError??)?string('is-invalid', '')}"
+                       value="<#if message??>${message.title}</#if>" name="title" placeholder="Enter title"/>
+                <#if titleError??>
+                    <div class="invalid-feedback">
+                       ${titleError}
+                    </div>
+                </#if>
+            </div>
+            <div class="form-group">
                 <input type="text" class="form-control ${(textError??)?string('is-invalid', '')}"
-                       value="<#if message??>${message.text}</#if>" name="text" placeholder="Enter some message"/>
+                       value="<#if message??>${message.text}</#if>" name="text" placeholder="Enter some description"/>
                 <#if textError??>
                     <div class="invalid-feedback">
                         ${textError}
+                    </div>
+                </#if>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control ${(numError??)?string('is-invalid', '')}"
+                       value="<#if message??>${message.num}</#if>" name="num"  placeholder="Speciality number"/>
+                <#if numError??>
+                    <div class="invalid-feedback">
+                        ${numError}
                     </div>
                 </#if>
             </div>
@@ -25,7 +43,7 @@
             <div class="form-group">
                 <div class="custom-file">
                     <input type="file" name="file" id="customFile">
-                    <label class="custom-file-label" for="customFile"><#if file??>${resultFilename}</#if>Choose file</label>
+                    <label class="custom-file-label" for="customFile"><#if file??>${resultFilename}</#if>Choose file not more than </label>
                 </div>
             </div>
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>

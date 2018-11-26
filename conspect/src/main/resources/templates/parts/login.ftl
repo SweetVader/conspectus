@@ -29,7 +29,7 @@
     <#if isRegisterForm>
 
     <div class="form-group">
-        <label class="col-sm-2 col-form-label"> Password:</label>
+        <label class="col-sm-2 col-form-label"> Repeat password:</label>
         <div class="col-sm-6">
             <input type="password" name="password2"
                    class="form-control ${(password2Error??)?string('is-invalid', '')}"

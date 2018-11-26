@@ -1,4 +1,4 @@
-package com.example.conspect.domain.dto;
+package com.example.conspectus.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

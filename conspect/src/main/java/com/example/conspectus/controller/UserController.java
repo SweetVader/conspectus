@@ -1,21 +1,17 @@
-package com.example.conspect.controller;
+package com.example.conspectus.controller;
 
-import com.example.conspect.domain.Message;
-import com.example.conspect.domain.Role;
-import com.example.conspect.domain.User;
-import com.example.conspect.repos.MessageRepo;
-import com.example.conspect.repos.UserRepo;
-import com.example.conspect.service.UserService;
+import com.example.conspectus.domain.Message;
+import com.example.conspectus.domain.Role;
+import com.example.conspectus.domain.User;
+import com.example.conspectus.repos.UserRepo;
+import com.example.conspectus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,13 +22,8 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private MessageRepo messageRepo;
-
-    @Autowired
     private UserRepo userRepo;
 
-    @Autowired
-    private MainController mainController;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
@@ -48,7 +39,7 @@ public class UserController {
         return "userEdit";
     }
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping
+    @PostMapping("{user.id}")
     public String userSave(
             @RequestParam String username,
             @RequestParam Map<String, String> form,
@@ -60,15 +51,12 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("user")
-    public String userDelete(
-            @RequestParam String username,
-            @RequestParam Map<String, String> form,
-            @RequestParam("userId") User user
-    ){
-        userRepo.delete(user);
+    @RequestMapping (method = RequestMethod.POST)
+    public String userDelete(@RequestParam Long CurrentDelete){
 
-        return "redirect:/user";
+          userRepo.deleteById(CurrentDelete);
+
+        return "userList";
     }
 
     @GetMapping("profile/{user}")
@@ -84,34 +72,6 @@ public class UserController {
         model.addAttribute("message", message);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
 
-
         return "profile";
-    }
-
-    @PostMapping("profile/{user}")
-    public String updateMessage(
-            @AuthenticationPrincipal User currentUser,
-            @PathVariable Long user,
-            @RequestParam("id") Message message,
-            @RequestParam("text") String text,
-            @RequestParam("tag") String tag,
-            @RequestParam("file") MultipartFile file
-    ) throws IOException {
-
-        if (message.getAuthor().equals(currentUser)) {
-            if (!StringUtils.isEmpty(text)) {
-                message.setText(text);
-            }
-
-            if (!StringUtils.isEmpty(tag)) {
-                message.setTag(tag);
-            }
-
-            mainController.saveFile(file, message);
-
-            messageRepo.save(message);
-        }
-
-        return "redirect: /{user}";
     }
 }
