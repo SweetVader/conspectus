@@ -16,10 +16,10 @@
 
     <div class = "mt-2"><h6>Status:</h6></div>
     <div class = "mt-2">
-        <label>
-            <input type="radio" name="status" value="1" <#if user.isActive()==true>checked</#if>>ACTIVE
-            <input type="radio" name="status" value="0" <#if user.isActive()==false>checked</#if>> BLOCK
-        </label>
+        <input type="radio" name="status" value="1" <#if user.isActive()==true>checked</#if>>
+        <label>ACTIVE</label>
+        <input type="radio" name="status" value="0" <#if user.isActive()==false>checked</#if>>
+        <label>BLOCK</label>
     </div>
 
     <input type="hidden" value="${user.id}" name="userId">

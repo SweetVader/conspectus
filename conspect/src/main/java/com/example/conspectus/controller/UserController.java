@@ -15,6 +15,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,8 +49,17 @@ public class UserController {
     public String userSave(
             @RequestParam String username,
             @RequestParam Map<String, String> form,
-            @RequestParam("userId") User user
+            @RequestParam("userId") User user,
+            HttpServletRequest request
     ){
+        String q2 = request.getParameter("status");
+        if ("1".equals(q2)) {
+            user.setActive(true);
+        } else {
+            user.setActive(false);
+        }
+        userRepo.save(user);
+
         userService.saveUser(user, username, form);
 
         return "redirect:/user";
