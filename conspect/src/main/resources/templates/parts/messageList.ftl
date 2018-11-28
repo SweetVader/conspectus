@@ -6,11 +6,10 @@
     <#list page.content as message>
     <div class="card my-3" data-id="${message.id}">
         <div class="m-2">
-            <h5>${message.title}</h5>
+            <a href="message/${message.id}"><h5>${message.title}</h5></a>
             <span>${message.text}</span><br/>
             <span class = "text-muted">Speciality № ${message.num}</span><br/>
             <i>#${message.tag}</i><br/>
-
             <#if user??>
                 <a href="/file/${message.filename}">File</a>
             <#else>
@@ -18,13 +17,10 @@
             </#if>
         </div>
         <div class="card-footer text-muted container">
-
             <div class="row">
-
                 <#if user??>
                     <a class="col align-self-center" href="/user/profile/${message.author.id}">${message.authorName}</a>
                     <a class="col align-self-center" href="/messages/${message.id}/like">
-
                         <#if message.meLiked>
                             <i class="fas fa-heart"></i>
                         <#else>

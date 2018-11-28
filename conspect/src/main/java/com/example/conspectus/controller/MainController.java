@@ -4,7 +4,9 @@ import com.example.conspectus.domain.Message;
 import com.example.conspectus.domain.User;
 import com.example.conspectus.domain.dto.MessageDto;
 import com.example.conspectus.repos.MessageRepo;
+import com.example.conspectus.repos.UserRepo;
 import com.example.conspectus.service.MessageService;
+import com.example.conspectus.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,12 @@ public class MainController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepo userRepo;
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
@@ -82,5 +90,25 @@ public class MainController {
                 .forEach(pair -> redirectAttributes.addAttribute(pair.getKey(), pair.getValue()));
 
         return "redirect:" + components.getPath();
+    }
+
+    @GetMapping("message/{message}")
+    public String getMessagePage(
+            Model model,
+            @RequestParam(required = false, defaultValue = "") String filter,
+            @PathVariable Message message,
+            @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal User user
+    ){
+        Page<MessageDto> page = messageService.messageList(pageable, filter, user);
+        Set<User> likes = message.getLikes();
+        messageRepo.findById(message.getId());
+        model.addAttribute("username", message.getAuthor());
+        model.addAttribute("message", message);
+        model.addAttribute("likes", likes);
+        model.addAttribute("page", page);
+        model.addAttribute("filter", filter);
+
+        return "message_page";
     }
 }

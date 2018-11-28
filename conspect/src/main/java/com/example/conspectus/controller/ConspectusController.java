@@ -9,11 +9,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -61,20 +61,23 @@ public class ConspectusController {
         return "success";
     }
 
-  /*  @PostMapping("/delete")
+    @GetMapping("/message/{message}/delete")
     public String deleteMessage(
-            @PathVariable User user,
-            @RequestParam("file") MultipartFile file,
-            @Valid Message message,
-            Model model
-            ){
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable Message message,
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer
+    ){
+        messageRepo.delete(message);
 
-        SQLiteDbSupport db = new SQLiteDbSupport();
-        db.delete
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
 
+        components.getQueryParams()
+                .entrySet()
+                .forEach(pair -> redirectAttributes.addAttribute(pair.getKey(), pair.getValue()));
 
-        return "profile/{user}";
-    }*/
+        return "redirect:" + components.getPath();
+    }
 
  /* @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{

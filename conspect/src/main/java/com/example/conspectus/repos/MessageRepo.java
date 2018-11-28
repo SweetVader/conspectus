@@ -40,4 +40,16 @@ public interface MessageRepo extends CrudRepository<Message, Long> {
             "group by m")
     Page<MessageDto> findByUser(Pageable pageable, @Param("author") User author, @Param("user") User user);
 
+    @Query("select new com.example.conspectus.domain.dto.MessageDto(" +
+            "   m, " +
+            "   count(ml), " +
+            "   sum(case when ml = :user then 1 else 0 end) > 0" +
+            ") " +
+            "from Message m left join m.likes ml " +
+            "where m.id = :id " +
+            "group by m")
+    Page<MessageDto> findById(@Param("id") Long id, Pageable pageable, @Param("user") User user);
+
+    void deleteById(Long id);
+
 }

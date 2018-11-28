@@ -3,7 +3,7 @@
 <@c.page>
 <h4>${username}</h4>
 
-<form method="post" action="/delete">
+
     <table class="table">
         <thead>
             <tr>
@@ -20,9 +20,9 @@
         <#list messages as message>
 
             <tbody>
-                <#if message??>
+
                     <tr>
-                        <th>${message.title}</th>
+                        <th><a href="/message/${message.id}">${message.title}</a></th>
                         <td>${message.text}</td>
                         <td>${message.num}</td>
                         <td>${message.tag}</td>
@@ -30,17 +30,17 @@
                         <#include "parts/security.ftl">
                         <#if message.author.id == currentUserId || isAdmin>
                             <td><a class="btn btn-success" href="/user/profile/${message.author.id}?message=${message.id}">Edit</a></td>
-                            <td><button type="submit" class="btn btn-danger">Delete</button></td>
+                            <td><a class = "btn btn-danger" href="/user/message/${message.id}/delete">Delete</a></td>
                         <#else>
                             <td>Like?</td>
                             <td>Rating?</td>
                         </#if>
                     </tr>
-                </#if>
+
             </tbody>
         </#list>
     </table>
-</form>
+
 
 <#include "parts/messageEdit.ftl" />
 
