@@ -50,6 +50,4 @@ public interface MessageRepo extends CrudRepository<Message, Long> {
             "group by m")
     Page<MessageDto> findById(@Param("id") Long id, Pageable pageable, @Param("user") User user);
 
-    void deleteById(Long id);
-
 }

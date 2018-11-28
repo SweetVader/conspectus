@@ -11,6 +11,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 import java.util.Set;
@@ -51,12 +54,21 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @RequestMapping (method = RequestMethod.POST)
-    public String userDelete(@RequestParam Long CurrentDelete){
+    @GetMapping("{user}/delete")
+    public String deleteUser(
+            @PathVariable User user,
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer
+    ){
+        userRepo.delete(user);
 
-          userRepo.deleteById(CurrentDelete);
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
 
-        return "userList";
+        components.getQueryParams()
+                .entrySet()
+                .forEach(pair -> redirectAttributes.addAttribute(pair.getKey(), pair.getValue()));
+
+        return "redirect:" + components.getPath();
     }
 
     @GetMapping("profile/{user}")

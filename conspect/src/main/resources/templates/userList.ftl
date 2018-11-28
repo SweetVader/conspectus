@@ -4,7 +4,7 @@
 <h2>List of users</h2>
 
 <table class="table table-hover">
-    <form method="post" >
+
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -24,11 +24,11 @@
                 <td><#if user.active==true>ACTIVE<#else>BLOCK</#if></td>
                 <td><a href="/user/${user.id}">Edit</a> </td>
                 <td>
-                    <button name = "CurrentDelete" type="submit" value="${user.id}" class="btn btn-outline-danger">Delete</button>
+                    <a class="btn btn-outline-danger" href="/user/${user.id}/delete">Delete</a>
                 </td>
             </tr>
         </#list>
         </tbody>
-    </form>
+
 </table>
 </@c.page>
