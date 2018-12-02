@@ -10,7 +10,6 @@
 <div class="container-fluid">${message.text}</div><br/>
 <h4>File:</h4>
 <a href="/file/${message.filename}">${message.filename}</a><br/>
-<h4 style="color:#ff6c36">LIKES!!!!!!!</h4>
 
 <h1><i class="fas fa-comments"></i></h1>
 

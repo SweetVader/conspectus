@@ -17,9 +17,9 @@ public interface MessageRepo extends CrudRepository<Message, Long> {
             "   sum(case when ml = :user then 1 else 0 end) > 0" +
             ") " +
             "from Message m left join m.likes ml " +
-            "where m.tag = :tag " +
+            "where m.text = :text " +
             "group by m")
-    Page<MessageDto> findByTag(@Param("tag") String tag, Pageable pageable, @Param("user") User user);
+    Page<MessageDto> findByText(@Param("text") String text, Pageable pageable, @Param("user") User user);
 
     @Query("select new com.example.conspectus.domain.dto.MessageDto(" +
             "   m, " +

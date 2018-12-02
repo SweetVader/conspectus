@@ -1,6 +1,5 @@
 package com.example.conspectus.domain;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,6 +17,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank(message = "Username can't be empty!")
     private  String  username;
     @NotBlank(message = "Password can't be empty!")
@@ -29,6 +30,10 @@ public class User implements UserDetails {
     @NotBlank(message = "Email can't be empty!")
     private String email;
     private String activationCode;
+    private String country;
+    private String city;
+    private String university;
+    private Date DOB;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -151,5 +156,37 @@ public class User implements UserDetails {
 
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
+    public Date getDOB() {
+        return DOB;
+    }
+
+    public void setDOB(Date DOB) {
+        this.DOB = DOB;
     }
 }

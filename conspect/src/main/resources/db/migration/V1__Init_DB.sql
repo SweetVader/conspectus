@@ -19,6 +19,10 @@ create table usr (
     email varchar(255) not null,
     password varchar(255) not null,
     username varchar(255) not null,
+    country varchar(255),
+    city varchar(255),
+    university varchar(255),
+    DOB date,
     primary key (id)) engine=MyISAM;
 
 alter table message add constraint message_user_fk

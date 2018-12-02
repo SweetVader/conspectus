@@ -12,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -104,20 +107,17 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
     }
 
-    /*public void deleteUser(User user, String username, Map<String,String> form) {
+    public void saveInformation(User user, String username, String country, String city, String university, String birth
+    ) throws ParseException {
         user.setUsername(username);
-
-        Set<Long> ID = Arrays.stream(Role.values())
-                .map(Role::name)
-                .collect(Collectors.toSet());
-
-        user.getRoles().clear();
-
-        for (String key : form.keySet()) {
-            if (ID.contains(key)) {
-                user.getRoles().add(Role.valueOf(key));
-            }
+        user.setCountry(country);
+        user.setCity(city);
+        user.setUniversity(university);
+        if (birth != ""){
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            Date dd = format.parse(birth);
+            user.setDOB(dd);
         }
         userRepo.save(user);
-    }*/
+    }
 }

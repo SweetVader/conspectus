@@ -37,7 +37,9 @@ public class ConspectusController {
             @RequestParam("file") MultipartFile file,
             @Valid Message message,
             BindingResult bindingResult,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer
     ) throws IOException {
 
         message.setAuthor(user);
@@ -58,7 +60,13 @@ public class ConspectusController {
         model.addAttribute("messages", messages);
         model.addAttribute("isCurrentUser", currentUser.equals(user));
 
-        return "success";
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
+
+        components.getQueryParams()
+                .entrySet()
+                .forEach(pair -> redirectAttributes.addAttribute(pair.getKey(), pair.getValue()));
+
+        return "redirect:" + components.getPath();
     }
 
     @GetMapping("/message/{message}/delete")
@@ -78,16 +86,6 @@ public class ConspectusController {
 
         return "redirect:" + components.getPath();
     }
-
- /* @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-      String[] ids = request.getParameterValues("message.id");
-
-      if (ids != null && ids.length > 0){
-          UserService userService = new UserService();
-          UserService.removeAll(ids);
-      }
-  }*/
 
     private void saveFile(@RequestParam("file") MultipartFile file, @Valid Message message) throws IOException {
         if (file != null && !file.getOriginalFilename().isEmpty()) {

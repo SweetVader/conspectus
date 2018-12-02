@@ -51,7 +51,6 @@ public class RegistrationController {
             model.addAttribute("captchaError", "Fill captcha");
         }
 
-
         if (user.getPassword() != null && !user.getPassword().equals(user.getPassword2())) {
             model.addAttribute("passwordError", "Passwords are different!");
         }

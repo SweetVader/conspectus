@@ -15,9 +15,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +32,6 @@ public class UserController {
 
     @Autowired
     private UserRepo userRepo;
-
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
@@ -97,5 +99,28 @@ public class UserController {
         model.addAttribute("isCurrentUser", currentUser.equals(user));
 
         return "profile";
+    }
+
+    @PostMapping("/profile/{user}/information")
+    public String addInformation(
+            @RequestParam String username,
+            @RequestParam String country,
+            @RequestParam String city,
+            @RequestParam String university,
+            @RequestParam(required = false) String birth,
+            @PathVariable User user,
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer
+    ) throws ParseException {
+
+        userService.saveInformation(user, username, country, city, university, birth);
+
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
+
+        components.getQueryParams()
+                .entrySet()
+                .forEach(pair -> redirectAttributes.addAttribute(pair.getKey(), pair.getValue()));
+
+        return "redirect:" + components.getPath();
     }
 }

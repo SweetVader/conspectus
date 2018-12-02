@@ -1,10 +1,12 @@
 <#import "parts/common.ftl" as c>
 
 <@c.page>
-<h4>${username}</h4>
+<h4>${username}</h4><br/>
+
+<#include "parts/information.ftl" />
 
 
-    <table class="table">
+    <table class="table mt-3">
         <thead>
             <tr>
                 <th scope="col">Title</th>
@@ -31,9 +33,6 @@
                         <#if message.author.id == currentUserId || isAdmin>
                             <td><a class="btn btn-success" href="/user/profile/${message.author.id}?message=${message.id}">Edit</a></td>
                             <td><a class = "btn btn-danger" href="/user/message/${message.id}/delete">Delete</a></td>
-                        <#else>
-                            <td>Like?</td>
-                            <td>Rating?</td>
                         </#if>
                     </tr>
 

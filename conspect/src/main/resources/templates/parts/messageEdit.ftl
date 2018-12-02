@@ -1,7 +1,7 @@
-<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+<a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample2" role="button" aria-expanded="false" aria-controls="multiCollapseExample2">
     Conspectus editor
 </a>
-<div class="collapse <#if message??>show</#if>" id="collapseExample">
+<div class="collapse multi-collapse <#if message??>show</#if>" id="multiCollapseExample2">
     <div class="form-group mt-3">
         <form method="post" enctype="multipart/form-data">
             <div class="form-group">
