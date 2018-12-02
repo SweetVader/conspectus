@@ -16,9 +16,9 @@
             <span class = "text-muted">Speciality № ${message.num}</span><br/>
             <i>#${message.tag}</i><br/>
             <#if user??>
-                <a href="/file/${message.filename}">File</a>
+                <a href="/file/${message.filename}">${message.filename}</a>
             <#else>
-                <a href="/guest">File</a>
+                <a href="/guest">${message.filename}</a>
             </#if>
         </div>
         <div class="card-footer text-muted container">

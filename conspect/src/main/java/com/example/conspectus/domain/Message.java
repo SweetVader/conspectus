@@ -38,6 +38,9 @@ public class Message {
     )
     private Set<User> likes = new HashSet<>();
 
+    @OneToMany(mappedBy = "conspect",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Comment> comments;
+
     public Message() {
     }
 
@@ -115,6 +118,14 @@ public class Message {
 
     public void setLikes(Set<User> likes) {
         this.likes = likes;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 }
 

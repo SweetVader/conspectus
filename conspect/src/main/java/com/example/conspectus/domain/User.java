@@ -43,6 +43,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Message> messages;
 
+    @OneToMany(mappedBy = "person",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Comment> comments;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -188,5 +191,13 @@ public class User implements UserDetails {
 
     public void setDOB(Date DOB) {
         this.DOB = DOB;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
     }
 }

@@ -1,8 +1,10 @@
 package com.example.conspectus.controller;
 
+import com.example.conspectus.domain.Comment;
 import com.example.conspectus.domain.Message;
 import com.example.conspectus.domain.User;
 import com.example.conspectus.domain.dto.MessageDto;
+import com.example.conspectus.repos.CommentRepo;
 import com.example.conspectus.repos.MessageRepo;
 import com.example.conspectus.repos.UserRepo;
 import com.example.conspectus.service.MessageService;
@@ -15,14 +17,13 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,9 @@ public class MainController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CommentRepo commentRepo;
 
     @Autowired
     private UserRepo userRepo;
@@ -95,20 +99,40 @@ public class MainController {
     @GetMapping("message/{message}")
     public String getMessagePage(
             Model model,
-            @RequestParam(required = false, defaultValue = "") String filter,
-            @PathVariable Message message,
-            @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable,
-            @AuthenticationPrincipal User user
+            @PathVariable Message message
     ){
-        Page<MessageDto> page = messageService.messageList(pageable, filter, user);
-        Set<User> likes = message.getLikes();
         messageRepo.findById(message.getId());
         model.addAttribute("username", message.getAuthor());
         model.addAttribute("message", message);
-        model.addAttribute("likes", likes);
-        model.addAttribute("page", page);
-        model.addAttribute("filter", filter);
+        model.addAttribute("comments", commentRepo.findAll());
 
         return "message_page";
+    }
+
+    @PostMapping("/messages/{message}/comment")
+    public String comment(
+            @AuthenticationPrincipal User currentUser,
+            @PathVariable Message message,
+            @Valid Comment comment,
+            @RequestParam String  commentariy,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes,
+            @RequestHeader(required = false) String referer,
+            Model model
+    ) {
+        if(commentariy != null){
+            comment.setConspect(message);
+            comment.setPerson(currentUser);
+            comment.setText(commentariy);
+            commentRepo.save(comment);
+        }
+
+        UriComponents components = UriComponentsBuilder.fromHttpUrl(referer).build();
+
+        components.getQueryParams()
+                .entrySet()
+                .forEach(pair -> redirectAttributes.addAttribute(pair.getKey(), pair.getValue()));
+
+        return "redirect:" + components.getPath();
     }
 }
